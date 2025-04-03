@@ -7,7 +7,7 @@
   </p>
   <p>
     <a href="https://github.com/aasaam/zep/actions/workflows/build.yml" target="_blank"><img src="https://github.com/aasaam/zep/actions/workflows/build.yml/badge.svg" alt="build" /></a>
-    <a href="https://goreportcard.com/report/github.com/aasaam/zep"><img alt="Go Report Card" src="https://goreportcard.com/badge/github.com/aasaam/zep"></a>
+    <a href="https://codecov.io/gh/aasaam/zep" target="_blank"><img src="https://codecov.io/gh/aasaam/zep/branch/main/graph/badge.svg" alt="Coverage" /></a>
     <a href="https://hub.docker.com/r/aasaam/zep" target="_blank"><img src="https://img.shields.io/docker/image-size/aasaam/zep?label=docker%20image" alt="docker" /></a>
     <a href="https://github.com/aasaam/zep/blob/master/LICENSE"><img alt="License" src="https://img.shields.io/github/license/aasaam/zep"></a>
   </p>
