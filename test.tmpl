@@ -1,0 +1,52 @@
+-- env vars
+asString:                   {{ asString "V_AsString" }}
+asStringOr:                 {{ asStringOr "V_AsStringOr" "default_Value" }}
+asStringSlice:{{ range asStringSlice "V_AsStringSlice" "," }}
+  - {{ . }}{{ end }}
+asStringSliceTrim:{{ range asStringSliceTrim "V_AsStringSliceTrim" "," " " }}
+  - {{ . }}{{ end }}
+asBool(true):               {{ asBool "V_AsBool_true" }}
+asBool(false):              {{ asBool "V_AsBool_false" }}
+asBoolOr(true):             {{ asBoolOr "V_AsBoolOr" true }}
+asBoolOr(false):            {{ asBoolOr "V_AsBoolOr" false }}
+{{ if asBoolOr "V_AsBoolOr" true }}
+asBoolOr(true) inside condition: true
+{{ else }}
+{{ end }}
+asInt:                      {{ asInt "V_AsInt" }}
+asIntOr:                    {{ asIntOr "V_AsIntOr" 100 }}
+asIntSlice:{{ range asIntSlice "V_AsIntSlice" "," }}
+  - {{ . }}{{ end }}
+asFloat:                    {{ asFloat "V_AsFloat" }}
+asFloatOr:                  {{ asFloatOr "V_AsFloatOr" 1.5 }}
+asFloatSlice:{{ range asFloatSlice "V_AsFloatSlice" "," }}
+  - {{ . }}{{ end }}
+asURL:                      {{ asURL "V_AsURL" }}
+asHostPort:                 {{ asHostPort "V_AsHostPort" }}
+asPort:                     {{ asPort "V_AsPort" }}
+asPortOr:                   {{ asPortOr "V_AsPortOr" 9090 }}
+
+-- utils
+isEmpty:                    {{ if isEmpty "" }}passed{{ else}}not valid{{ end }}
+contains:                   {{ if contains "Hello World" "World" }}passed{{ else}}not valid{{ end }}
+containsCaseInsensitive:    {{ if containsCaseInsensitive "Hello World" "world" }}passed{{ else}}not valid{{ end }}
+containsAny:                {{ if containsAny "Hello World" "WH" }}passed{{ else}}not valid{{ end }}
+hasPrefix:                  {{ if hasPrefix "Hello World" "Hello" }}passed{{ else}}not valid{{ end }}
+hasSuffix:                  {{ if hasSuffix "Hello World" "World" }}passed{{ else}}not valid{{ end }}
+toLower:                    {{ toLower "Hello World" }}
+toUpper:                    {{ toUpper "Hello World" }}
+trim:                       {{ trim "*Hello World*" "*" }}
+trimLeft:                   {{ trimLeft "*Hello World*" "*" }}
+trimRight:                  {{ trimRight "*Hello World*" "*" }}
+trimSpace:                  {{ trimSpace " Hello World " }}
+base64Encode:               {{ base64Encode "Hello World" }}
+base64Decode:               {{ base64Decode "SGVsbG8gV29ybGQ=" }}
+hash_MD5:                   {{ hash "Hello World" "md5" }}
+hash_SHA1:                  {{ hash "Hello World" "sha1" }}
+hash_SHA224:                {{ hash "Hello World" "sha224" }}
+hash_SHA256:                {{ hash "Hello World" "sha256" }}
+hash_SHA512:                {{ hash "Hello World" "sha512" }}
+
+sequence:{{ range sequence 1 10 }}
+  {{ . }}{{ end }}
+

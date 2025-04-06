@@ -3,7 +3,7 @@
     zep
   </h1>
   <p>
-    <strong>Z</strong> generation enviroment variable processor
+    <strong>Z</strong> generation enviroment variable gotemplate processor
   </p>
   <p>
     <a href="https://github.com/aasaam/zep/actions/workflows/build.yml" target="_blank"><img src="https://github.com/aasaam/zep/actions/workflows/build.yml/badge.svg" alt="build" /></a>
@@ -12,6 +12,31 @@
     <a href="https://github.com/aasaam/zep/blob/master/LICENSE"><img alt="License" src="https://img.shields.io/github/license/aasaam/zep"></a>
   </p>
 </div>
+
+## Usage
+
+Include zep as a small binary in your Docker image using multi-stage builds:
+
+```Dockerfile
+# build layer
+FROM ghcr.io/aasaam/zep:latest as zep
+
+# final layer
+FROM yourimage
+
+COPY --from=zep /usr/bin/zep /usr/local/bin/zep
+```
+
+Then in your entrypoint script:
+
+```sh
+#!/bin/sh
+set -e
+# Use zep to process your template file
+/usr/local/bin/zep /path/to/your/template > final-config.ext
+# Run your application
+/run/my/awesome-process
+```
 
 <div>
   <p align="center">

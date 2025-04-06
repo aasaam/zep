@@ -1,21 +1,43 @@
 package main
 
 import (
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"testing"
 )
 
-func TestRun(t *testing.T) {
-	// Create a temporary directory for test files
-	tempDir, err := ioutil.TempDir("", "zep-test")
-	if err != nil {
-		t.Fatalf("Failed to create temp directory: %v", err)
-	}
-	defer os.RemoveAll(tempDir)
+func TestRunInvalidTemplate(t *testing.T) {
+	tempDir := t.TempDir()
 
-	// Test cases
+	templatePath := filepath.Join(tempDir, "invalid_template.txt")
+	templateContent := "Hello {{.NAME!}"
+	err := os.WriteFile(templatePath, []byte(templateContent), 0644)
+	if err != nil {
+		t.Fatalf("Failed to create template file: %v", err)
+	}
+
+	args := []string{"zep", templatePath}
+	env := []string{"NAME=World"}
+
+	output, err := Run(args, env)
+	if err == nil {
+		t.Errorf("Expected error for invalid template but got none")
+	}
+
+	expectedErrorMsg := "error rendering template"
+	if err != nil && !contains(err.Error(), expectedErrorMsg) {
+		t.Errorf("Expected error message to contain %q but got %q", expectedErrorMsg, err.Error())
+	}
+
+	if output != "" {
+		t.Errorf("Expected empty output for invalid template but got %q", output)
+	}
+}
+
+func TestRun(t *testing.T) {
+
+	tempDir := t.TempDir()
+
 	tests := []struct {
 		name            string
 		args            []string
@@ -60,31 +82,28 @@ func TestRun(t *testing.T) {
 			args:            []string{"zep", "template.txt"},
 			env:             []string{"NAME=World"},
 			templateFile:    "template.txt",
-			templateContent: "{{asInt \"COUNT\"}}", // COUNT not defined
+			templateContent: "{{asInt \"COUNT\"}}",
 			expectError:     true,
 		},
 	}
 
 	for _, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
-			// If we need a template file, create it
+
 			if tc.templateFile != "" && tc.templateContent != "" {
 				templatePath := filepath.Join(tempDir, tc.templateFile)
-				err := ioutil.WriteFile(templatePath, []byte(tc.templateContent), 0644)
+				err := os.WriteFile(templatePath, []byte(tc.templateContent), 0644)
 				if err != nil {
 					t.Fatalf("Failed to create template file: %v", err)
 				}
 
-				// Update the path in args
 				if len(tc.args) > 1 {
 					tc.args[1] = templatePath
 				}
 			}
 
-			// Run the function
 			output, err := Run(tc.args, tc.env)
 
-			// Check if error behavior matches expectations
 			if tc.expectError && err == nil {
 				t.Errorf("Expected error but got none")
 			}
@@ -92,7 +111,6 @@ func TestRun(t *testing.T) {
 				t.Errorf("Got unexpected error: %v", err)
 			}
 
-			// Check output if no error was expected
 			if !tc.expectError && output != tc.expectedOutput {
 				t.Errorf("Expected output %q but got %q", tc.expectedOutput, output)
 			}
@@ -101,22 +119,16 @@ func TestRun(t *testing.T) {
 }
 
 func TestRunWithEmptyEnvironment(t *testing.T) {
-	// Create a temporary directory for test files
-	tempDir, err := ioutil.TempDir("", "zep-test")
-	if err != nil {
-		t.Fatalf("Failed to create temp directory: %v", err)
-	}
-	defer os.RemoveAll(tempDir)
 
-	// Create a template file
+	tempDir := t.TempDir()
+
 	templatePath := filepath.Join(tempDir, "template.txt")
 	templateContent := "Hello {{asStringOr \"NAME\" \"default\"}}!"
-	err = ioutil.WriteFile(templatePath, []byte(templateContent), 0644)
+	err := os.WriteFile(templatePath, []byte(templateContent), 0644)
 	if err != nil {
 		t.Fatalf("Failed to create template file: %v", err)
 	}
 
-	// Test with empty environment
 	args := []string{"zep", templatePath}
 	env := []string{}
 
@@ -132,22 +144,16 @@ func TestRunWithEmptyEnvironment(t *testing.T) {
 }
 
 func TestRunWithMalformedEnvironment(t *testing.T) {
-	// Create a temporary directory for test files
-	tempDir, err := ioutil.TempDir("", "zep-test")
-	if err != nil {
-		t.Fatalf("Failed to create temp directory: %v", err)
-	}
-	defer os.RemoveAll(tempDir)
 
-	// Create a template file
+	tempDir := t.TempDir()
+
 	templatePath := filepath.Join(tempDir, "template.txt")
 	templateContent := "Hello {{asStringOr \"NAME\" \"default\"}}!"
-	err = ioutil.WriteFile(templatePath, []byte(templateContent), 0644)
+	err := os.WriteFile(templatePath, []byte(templateContent), 0644)
 	if err != nil {
 		t.Fatalf("Failed to create template file: %v", err)
 	}
 
-	// Test with malformed environment entries
 	args := []string{"zep", templatePath}
 	env := []string{"NAME=World", "INVALID_ENTRY", "=VALUE_WITHOUT_KEY"}
 
@@ -156,7 +162,6 @@ func TestRunWithMalformedEnvironment(t *testing.T) {
 		t.Errorf("Unexpected error with malformed environment: %v", err)
 	}
 
-	// Should only process the valid environment entry
 	expectedOutput := "Hello World!"
 	if output != expectedOutput {
 		t.Errorf("Expected output %q with malformed environment but got %q", expectedOutput, output)

@@ -11,5 +11,5 @@ func main() {
 		fmt.Fprintln(os.Stderr, err)
 		os.Exit(1)
 	}
-	fmt.Print(output)
+	fmt.Fprintln(os.Stdout, output)
 }
