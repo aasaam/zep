@@ -599,6 +599,10 @@ func Test_isEmpty(t *testing.T) {
 			if got != tc.wanted {
 				t.Errorf("isEmpty(%q) = %v, want %v", tc.value, got, tc.wanted)
 			}
+			notSame := isNotEmpty(tc.value)
+			if notSame != !tc.wanted {
+				t.Errorf("isNotEmpty(%q) = %v, want %v", tc.value, notSame, !tc.wanted)
+			}
 		})
 	}
 }

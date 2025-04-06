@@ -319,6 +319,11 @@ func isEmpty(s string) bool {
 	return strings.TrimSpace(s) == ""
 }
 
+// isNotEmpty checks if a string is not empty or contains only whitespace
+func isNotEmpty(s string) bool {
+	return strings.TrimSpace(s) != ""
+}
+
 // contains checks if a string contains a substring
 func contains(s, substr string) bool {
 	return strings.Contains(s, substr)
@@ -488,6 +493,7 @@ func GetTemplateFunctions(env Environment) template.FuncMap {
 		"trimRight":               trimRight,
 		"trimSpace":               trimSpace,
 		"isEmpty":                 isEmpty,
+		"isNotEmpty":              isNotEmpty,
 
 		// Encoding and utility functions
 		"base64Decode": base64Decode,
