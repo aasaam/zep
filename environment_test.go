@@ -30,6 +30,50 @@ func TestNewEnvironment(t *testing.T) {
 	}
 }
 
+func TestExist(t *testing.T) {
+	env := Environment{"KEY": "value", "EMPTY": ""}
+
+	tests := []struct {
+		name string
+		key  string
+		want bool
+	}{
+		{name: "existing key", key: "KEY", want: true},
+		{name: "non-existent key", key: "NONEXISTENT", want: false},
+	}
+
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			got := env.Exist(tc.key)
+			if got != tc.want {
+				t.Errorf("Exist(%q) = %v, want %v", tc.key, got, tc.want)
+			}
+			notExist := env.NotExist(tc.key)
+			if notExist != !tc.want {
+				t.Errorf("NotExist(%q) = %v, want %v", tc.key, notExist, !tc.want)
+			}
+		})
+	}
+	t.Run("empty key", func(t *testing.T) {
+		if !env.ExistAndNotEmpty("KEY") {
+			t.Error("ExistAndNotEmpty should return true for non-empty key")
+		}
+		if env.ExistAndNotEmpty("KEY_NOT_EXIST") {
+			t.Error("ExistAndNotEmpty should return false for non-existing key")
+		}
+		if !env.NotExistOrEmpty("KEY_NOT_EXIST") {
+			t.Error("NotExistOrEmpty should return true for non-existing key")
+		}
+		if env.ExistAndNotEmpty("EMPTY") {
+			t.Error("ExistAndNotEmpty should return false for empty key")
+		}
+		notExist := env.NotExistOrEmpty("EMPTY")
+		if !notExist {
+			t.Error("NotExistOrEmpty should return true for empty key")
+		}
+	})
+}
+
 func TestAsString(t *testing.T) {
 	env := Environment{"KEY": "value"}
 

@@ -35,6 +35,36 @@ func (env Environment) AsString(key string) string {
 	return value
 }
 
+// Exist will check if the key exists in the environment
+func (env Environment) Exist(key string) bool {
+	_, ok := env[key]
+	return ok
+}
+
+// Exist will check if the key exists in the environment
+func (env Environment) ExistAndNotEmpty(key string) bool {
+	value, ok := env[key]
+	if !ok {
+		return false
+	}
+	return isNotEmpty(value)
+}
+
+// NotExist will check if the key does not exist in the environment
+func (env Environment) NotExist(key string) bool {
+	_, ok := env[key]
+	return !ok
+}
+
+// NotExistOrEmpty will check if the key does not exist in the environment
+func (env Environment) NotExistOrEmpty(key string) bool {
+	value, ok := env[key]
+	if !ok {
+		return true
+	}
+	return isEmpty(value)
+}
+
 // AsStringOr retrieves a string value for the given environment key
 // Returns the defaultValue if the key is not found
 func (env Environment) AsStringOr(key, defaultValue string) string {
@@ -479,6 +509,10 @@ func GetTemplateFunctions(env Environment) template.FuncMap {
 		"asURL":             env.AsURL,
 		"asHostPort":        env.AsHostPort,
 		"sortAll":           env.SortAll,
+		"exist":             env.Exist,
+		"existAndNotEmpty":  env.ExistAndNotEmpty,
+		"notExist":          env.NotExist,
+		"notExistOrEmpty":   env.NotExistOrEmpty,
 
 		// String functions
 		"contains":                contains,
